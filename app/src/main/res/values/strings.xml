@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ExifCamera</string>
+    <string name="title_image">Image Camera</string>
+    <string name="path_image">Path image here!</string>
+</resources>
