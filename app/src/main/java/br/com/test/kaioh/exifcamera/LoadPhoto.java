@@ -8,12 +8,13 @@ import android.media.ExifInterface;
 import java.io.IOException;
 
 /**
- * Created by @autor Kaio Henrique on 16/03/2018.
+ * Created by
+ *  @autor Kaio Henrique on 16/03/2018.
  */
 
 public class CarregaFoto {
 
-    public static Bitmap carregaImage(String imagePath) throws IOException {
+    public static Bitmap loadImage(String imagePath) throws IOException {
         Bitmap bitmap = null;
         ExifInterface exif = new ExifInterface(imagePath);
         String orientation = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
