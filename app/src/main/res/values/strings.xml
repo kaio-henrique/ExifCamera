@@ -2,4 +2,7 @@
     <string name="app_name">ExifCamera</string>
     <string name="title_image">Image Camera</string>
     <string name="path_image">Path image here!</string>
+    <string name="btn_camera">Camera</string>
+    <string name="btn_gallery">Galeria</string>
+    <string name="file_provider_authority" translatable="false">br.com.test.kaioh.exifcamera.fileprovider</string>
 </resources>
