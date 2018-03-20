@@ -1,9 +1,15 @@
 package br.com.test.kaioh.exifcamera;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
+import android.support.v7.app.AppCompatActivity;
 
 import java.io.IOException;
 
@@ -12,34 +18,30 @@ import java.io.IOException;
  *  @autor Kaio Henrique on 16/03/2018.
  */
 
-public class CarregaFoto {
+public class LoadPhoto extends AppCompatActivity {
 
-    public static Bitmap loadImage(String imagePath) throws IOException {
+    public static Bitmap loadImage(Context ctx, Uri imageUri, String imagePath) throws IOException {
         Bitmap bitmap = null;
         ExifInterface exif = new ExifInterface(imagePath);
-        String orientation = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
-        int codOrientation = Integer.parseInt(orientation);
+        int orientation;
 
-        switch (codOrientation) {
-            case ExifInterface.ORIENTATION_NORMAL:
-                bitmap = openPhotoRotate(imagePath, 0);
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                bitmap = openPhotoRotate(imagePath, 90);
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                bitmap = openPhotoRotate(imagePath, 180);
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                bitmap = openPhotoRotate(imagePath, 270);
-        }/*
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            orientation = getOrientation(ctx, imageUri);
+        } else {
+            orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1);
+        }
 
-        if (codOrientation == ExifInterface.ORIENTATION_NORMAL){
+        if (orientation == ExifInterface.ORIENTATION_NORMAL){
             bitmap = openPhotoRotate(imagePath, 0);
-        } else if (codOrientation == ExifInterface.ORIENTATION_ROTATE_90){
+        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_90){
             bitmap = openPhotoRotate(imagePath, 90);
-        } else if (codOrientation == ExifInterface.ORIENTATION_ROTATE_180){
+        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180){
             bitmap = openPhotoRotate(imagePath, 180);
-        } else if (codOrientation == ExifInterface.ORIENTATION_ROTATE_270){
+        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270){
             bitmap = openPhotoRotate(imagePath, 270);
-        }*/
+        } else {
+            bitmap = openPhotoRotate(imagePath, 0);
+        }
 
         return bitmap;
     }
@@ -57,4 +59,17 @@ public class CarregaFoto {
                 bitmap.getWidth(), bitmap.getHeight(),
                 matrix, true);
     }
+
+    public static int getOrientation(Context ctx, Uri photoUri) {
+        Cursor cursor = ctx.getContentResolver().query(photoUri,
+                new String[] { MediaStore.Images.ImageColumns.ORIENTATION }, null, null, null);
+
+        if (cursor.getCount() != 1) {
+            return -1;
+        }
+
+        cursor.moveToFirst();
+        return cursor.getInt(0);
+    }
+
 }
